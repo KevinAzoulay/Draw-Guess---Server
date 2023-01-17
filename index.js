@@ -82,7 +82,3 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 });
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
