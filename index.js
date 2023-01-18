@@ -82,3 +82,6 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 });
+app.get("/", (req, res) => {
+  res.send("app is running...");
+});
