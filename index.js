@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 4000 || 8080;
+const port = 4000;
 const socket = require("socket.io");
 const cors = require("cors");
 
@@ -12,11 +12,12 @@ function User(username, player, wordschoosen, wordToGuess, points) {
   this.points = points;
 }
 const players = [];
+let gameId = "";
 app.use(cors());
 app.use(express.json());
 
 const server = app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
 
 const io = socket(server, {
@@ -28,14 +29,16 @@ const io = socket(server, {
 io.on("connection", (socket) => {
   socket.on("join_game", (data) => {
     if (players.length === 2) {
-      io.emit("player_entered", { err: "2 players are already connected" });
+      io.emit("room_full");
       return;
     }
-    let player = new User(data.currentUser.username, !players.length ? 1 : 2);
+    let player = new User(data.currentUser.username, data.currentUser.player);
+    // let player = new User(data.currentUser.username, !players.length ? 1 : 2);
     console.log(player, "This is the user from constructor");
     players.push(player);
+    gameId = data.gameId;
     socket.join(data.gameId);
-    io.emit("player_entered", { players: players });
+    io.emit("player_entered", { players: player });
     console.log(players);
   });
 
@@ -75,6 +78,7 @@ io.on("connection", (socket) => {
     players.pop();
     players.pop();
     socket.leave(gameId);
+    gameId = "";
     socket.broadcast.emit("game_ended");
   });
 
@@ -82,6 +86,7 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 });
+
 app.get("/", (req, res) => {
-  res.send("app is running...");
+  res.send("Hello World!");
 });
