@@ -32,8 +32,8 @@ io.on("connection", (socket) => {
       io.emit("room_full");
       return;
     }
-    // let player = new User(data.currentUser.username, data.currentUser.player);
-    let player = new User(data.currentUser.username, !players.length ? 1 : 2);
+    let player = new User(data.currentUser.username, data.currentUser.player);
+    // let player = new User(data.currentUser.username, !players.length ? 1 : 2);
     console.log(player, "This is the user from constructor");
     players.push(player);
     gameId = data.gameId;
