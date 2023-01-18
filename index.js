@@ -9,7 +9,7 @@ function User(username, player, wordschoosen, wordToGuess, points) {
   this.player = player;
   this.wordschoosen = wordschoosen;
   this.wordToGuess = wordToGuess;
-  this.points = points;
+  this.points = 0;
 }
 const players = [];
 let gameId = "";
@@ -66,8 +66,12 @@ io.on("connection", (socket) => {
 
   socket.on("add_point", ({ data, player }) => {
     let currentPlayerIndex = players.findIndex((p) => p.player == player);
+    console.log(data + player + currentPlayerIndex, +players);
     players[currentPlayerIndex].points =
       players[currentPlayerIndex].points + data;
+    console.log(
+      players[currentPlayerIndex].points + "Point fromn server" + data
+    );
     let temp = players[0].player;
     players[0].player = players[1].player;
     players[1].player = temp;
